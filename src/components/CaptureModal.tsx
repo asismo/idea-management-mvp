@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button';
 import { Card } from './Card';
-import { useAI } from '../hooks/useAI';}
+import { useAI } from '../hooks/useAI';
 
 interface CaptureModalProps {
   isOpen: boolean;
