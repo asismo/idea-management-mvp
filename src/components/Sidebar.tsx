@@ -41,10 +41,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-screen overflow-y-auto flex flex-col">
+    <div className="w-64 bg-sidebar border-r border-sidebar-border h-screen overflow-y-auto flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-slate-200 dark:border-slate-800">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">Folders</h2>
+      <div className="p-4 border-b border-sidebar-border">
+        <h2 className="text-lg font-semibold text-sidebar-foreground">Folders</h2>
       </div>
 
       {/* Folders List */}
@@ -67,20 +67,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors
                   ${
                     selectedFolderId === folder.id
-                      ? 'bg-blue-100 dark:bg-blue-900/30'
-                      : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                      ? 'bg-sidebar-primary/20'
+                      : 'hover:bg-sidebar-accent/10'
                   }
                   ${draggedFolderId === folder.id ? 'opacity-50' : ''}
                 `}
                 onClick={() => onSelectFolder(folder.id)}
               >
-                <GripVertical size={16} className="text-slate-400 dark:text-slate-600" />
+                <GripVertical size={16} className="text-muted-foreground" />
                 <span className="text-lg">{folder.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-50 truncate">
+                  <p className="text-sm font-medium text-sidebar-foreground truncate">
                     {folder.name}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     {folder.idea_count} {folder.idea_count === 1 ? 'idea' : 'ideas'}
                   </p>
                 </div>

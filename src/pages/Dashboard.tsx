@@ -26,27 +26,14 @@ export const Dashboard: React.FC = () => {
     showSettings,
     selectedFolderId,
     searchQuery,
-    theme,
     setShowOnboarding,
     setShowSettings,
     setSelectedFolderId,
     setSearchQuery,
-    setTheme,
   } = useUIStore();
 
   const [showCaptureModal, setShowCaptureModal] = useState(false);
   const [mergeSourceId, setMergeSourceId] = useState<string | null>(null);
-
-  // Initialize theme
-  useEffect(() => {
-    const isDark =
-      theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
 
   // Show onboarding on first visit
   useEffect(() => {
@@ -117,7 +104,7 @@ export const Dashboard: React.FC = () => {
   const currentFolder = selectedFolderId ? folders.find((f) => f.id === selectedFolderId) : null;
 
   return (
-    <div className="flex h-screen bg-white dark:bg-slate-950">
+    <div className="flex h-screen bg-background">
       {/* Sidebar */}
       <Sidebar
         folders={folders}
@@ -135,8 +122,6 @@ export const Dashboard: React.FC = () => {
           onSearchChange={setSearchQuery}
           onSettingsClick={() => setShowSettings(true)}
           onHelpClick={() => setShowOnboarding(true)}
-          theme={theme}
-          onThemeChange={setTheme}
         />
 
         {/* Content Area */}
