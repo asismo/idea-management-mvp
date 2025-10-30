@@ -6,7 +6,6 @@ import { CaptureModal } from '../components/CaptureModal';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { OnboardingWalkthrough } from '../components/OnboardingWalkthrough';
 import { IdeaCard } from '../components/IdeaCard';
-import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { useIdeas } from '../hooks/useIdeas';
 import { useFolders } from '../hooks/useFolders';
@@ -14,13 +13,12 @@ import { useSettings } from '../hooks/useSettings';
 import { useAI } from '../hooks/useAI';
 import { useUIStore } from '../store/uiStore';
 
-
 export const Dashboard: React.FC = () => {
-  const { ideas, createIdea, deleteIdea } = useIdeas();
-  const { folders, createFolder, updateFolder, deleteFolder, mergeFolders } = useFolders();
-  const { settings, updateSetting } = useSettings();
-  const { generateDescription } = useAI();
+  const [showCaptureModal, setShowCaptureModal] = useState(false);
+  const [mergeSourceId, setMergeSourceId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  // Initialize state
   const {
     showOnboarding,
     showSettings,
@@ -32,8 +30,42 @@ export const Dashboard: React.FC = () => {
     setSearchQuery,
   } = useUIStore();
 
-  const [showCaptureModal, setShowCaptureModal] = useState(false);
-  const [mergeSourceId, setMergeSourceId] = useState<string | null>(null);
+  // Load data with error handling
+  let ideas = [];
+  let folders = [];
+  let settings = null;
+  let createIdea = async () => {};
+  let deleteIdea = async () => {};
+  let createFolder = async () => {};
+  let updateFolder = async () => {};
+  let deleteFolder = async () => {};
+  let mergeFolders = async () => {};
+  let generateDescription = async () => '';
+
+  try {
+    const ideasHook = useIdeas();
+    const foldersHook = useFolders();
+    const settingsHook = useSettings();
+    const aiHook = useAI();
+
+    ideas = ideasHook.ideas || [];
+    folders = foldersHook.folders || [];
+    settings = settingsHook.settings;
+    createIdea = ideasHook.createIdea;
+    deleteIdea = ideasHook.deleteIdea;
+    createFolder = foldersHook.createFolder;
+    updateFolder = foldersHook.updateFolder;
+    deleteFolder = foldersHook.deleteFolder;
+    mergeFolders = foldersHook.mergeFolders;
+    generateDescription = aiHook.generateDescription;
+
+    if (ideasHook.error) setError(ideasHook.error);
+    if (foldersHook.error) setError(foldersHook.error);
+    if (settingsHook.error) setError(settingsHook.error);
+  } catch (err) {
+    console.error('Error loading data:', err);
+    setError(err instanceof Error ? err.message : 'Failed to load data');
+  }
 
   // Show onboarding on first visit
   useEffect(() => {
@@ -60,8 +92,9 @@ export const Dashboard: React.FC = () => {
         const description = await generateDescription(folder.name, folderIdeas);
         await updateFolder(folderId, { description });
       }
-    } catch (error) {
-      console.error('Error capturing idea:', error);
+    } catch (err) {
+      console.error('Error capturing idea:', err);
+      setError(err instanceof Error ? err.message : 'Failed to save idea');
     }
   };
 
@@ -86,8 +119,9 @@ export const Dashboard: React.FC = () => {
       await mergeFolders(mergeSourceId, targetId, newDescription);
 
       setMergeSourceId(null);
-    } catch (error) {
-      console.error('Error merging folders:', error);
+    } catch (err) {
+      console.error('Error merging folders:', err);
+      setError(err instanceof Error ? err.message : 'Failed to merge folders');
     }
   };
 
@@ -102,6 +136,23 @@ export const Dashboard: React.FC = () => {
   });
 
   const currentFolder = selectedFolderId ? folders.find((f) => f.id === selectedFolderId) : null;
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-2">Error Loading App</h1>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
+          >
+            Reload
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -132,41 +183,27 @@ export const Dashboard: React.FC = () => {
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-3xl">{currentFolder.icon}</span>
                 <div>
-                  <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                    {currentFolder.name}
-                  </h1>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    {currentFolder.idea_count} ideas
-                  </p>
+                  <h1 className="text-2xl font-bold text-foreground">{currentFolder.name}</h1>
+                  {currentFolder.description && (
+                    <p className="text-sm text-muted-foreground mt-1">{currentFolder.description}</p>
+                  )}
                 </div>
               </div>
-              {currentFolder.description && (
-                <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {currentFolder.description}
-                  </p>
-                </Card>
-              )}
             </div>
           )}
 
           {/* Ideas Grid */}
           {filteredIdeas.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-center">
-              <p className="text-lg font-medium text-slate-900 dark:text-slate-50 mb-2">
-                {ideas.length === 0 ? 'No ideas yet' : 'No ideas match your search'}
-              </p>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                {ideas.length === 0
-                  ? 'Create your first idea to get started'
-                  : 'Try a different search query'}
-              </p>
-              {ideas.length === 0 && (
-                <Button variant="primary" onClick={() => setShowCaptureModal(true)}>
-                  <Plus size={16} className="mr-2" />
-                  Capture Idea
-                </Button>
-              )}
+            <div className="flex flex-col items-center justify-center h-96">
+              <p className="text-lg text-muted-foreground mb-4">No ideas yet</p>
+              <p className="text-sm text-muted-foreground mb-6">Create your first idea to get started</p>
+              <Button
+                onClick={() => setShowCaptureModal(true)}
+                className="flex items-center gap-2"
+              >
+                <Plus size={20} />
+                Capture Idea
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -174,26 +211,22 @@ export const Dashboard: React.FC = () => {
                 <IdeaCard
                   key={idea.id}
                   idea={idea}
-                  folder={folders.find((f) => f.id === idea.folder_id)}
-                  onDelete={deleteIdea}
+                  onDelete={() => deleteIdea(idea.id)}
                 />
               ))}
             </div>
           )}
         </div>
-
-        {/* Floating Action Button */}
-        <div className="fixed bottom-6 right-6">
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => setShowCaptureModal(true)}
-            className="rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:shadow-xl"
-          >
-            <Plus size={24} />
-          </Button>
-        </div>
       </div>
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => setShowCaptureModal(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center"
+        title="Capture new idea"
+      >
+        <Plus size={24} />
+      </button>
 
       {/* Modals */}
       <CaptureModal
@@ -204,47 +237,15 @@ export const Dashboard: React.FC = () => {
         categorizationMode={settings?.categorization_mode || 'simple'}
       />
 
-      {settings && (
-        <SettingsPanel
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-          settings={settings}
-          onSettingsChange={updateSetting}
-        />
-      )}
+      <SettingsPanel
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
 
       <OnboardingWalkthrough
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
-        onComplete={() => settings && updateSetting('onboarding_completed', true)}
       />
-
-      {/* Merge Confirmation */}
-      {mergeSourceId && (
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50 mb-4">
-              Merge Folders?
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-              This will merge{' '}
-              <strong>{folders.find((f) => f.id === mergeSourceId)?.name}</strong> into{' '}
-              <strong>{currentFolder?.name}</strong>. The description will be updated automatically.
-            </p>
-            <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setMergeSourceId(null)}>
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => handleMergeFolders(selectedFolderId || '')}
-              >
-                Merge
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };
