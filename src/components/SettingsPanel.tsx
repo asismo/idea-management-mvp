@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
 import { Card } from './Card';
 import { Button } from './Button';
@@ -18,16 +18,13 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   settings,
   onSettingsChange,
 }) => {
-
-
   if (!isOpen || !settings) return null;
 
   const handleChange = async <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    setIsSaving(true);
     try {
       await onSettingsChange(key, value);
-    } finally {
-      setIsSaving(false);
+    } catch (error) {
+      console.error('Error updating setting:', error);
     }
   };
 

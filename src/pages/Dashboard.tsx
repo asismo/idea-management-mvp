@@ -13,7 +13,7 @@ import { useFolders } from '../hooks/useFolders';
 import { useSettings } from '../hooks/useSettings';
 import { useAI } from '../hooks/useAI';
 import { useUIStore } from '../store/uiStore';
-import type { Folder } from '../types';
+
 
 export const Dashboard: React.FC = () => {
   const { ideas, createIdea, deleteIdea } = useIdeas();
