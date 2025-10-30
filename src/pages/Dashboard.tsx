@@ -13,13 +13,13 @@ import { useFolders } from '../hooks/useFolders';
 import { useSettings } from '../hooks/useSettings';
 import { useAI } from '../hooks/useAI';
 import { useUIStore } from '../store/uiStore';
-import { Folder } from '../types';
+import type { Folder } from '../types';
 
 export const Dashboard: React.FC = () => {
-  const { ideas, loading: ideasLoading, createIdea, deleteIdea } = useIdeas();
-  const { folders, loading: foldersLoading, createFolder, updateFolder, deleteFolder, mergeFolders } = useFolders();
+  const { ideas, createIdea, deleteIdea } = useIdeas();
+  const { folders, createFolder, updateFolder, deleteFolder, mergeFolders } = useFolders();
   const { settings, updateSetting } = useSettings();
-  const { generateTags, categorizeIdea, generateDescription } = useAI();
+  const { generateDescription } = useAI();
 
   const {
     showOnboarding,

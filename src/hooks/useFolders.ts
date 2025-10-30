@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useFolderStore } from '../store/folderStore';
-import { Folder } from '../types';
+import type { Folder } from '../types';
 import * as supabaseClient from '../services/supabaseClient';
 
 export const useFolders = () => {

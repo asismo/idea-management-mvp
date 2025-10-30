@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Idea } from '../types';
+import type { Idea } from '../types';
 
 interface IdeaStore {
   ideas: Idea[];

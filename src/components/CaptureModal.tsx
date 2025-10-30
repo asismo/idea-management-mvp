@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { X, Loader } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from './Button';
 import { Card } from './Card';
-import { useAI } from '../hooks/useAI';
-import { useFolders } from '../hooks/useFolders';
+import { useAI } from '../hooks/useAI';}
 
 interface CaptureModalProps {
   isOpen: boolean;

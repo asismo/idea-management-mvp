@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Trash2, Edit2 } from 'lucide-react';
 import { Card } from './Card';
-import { Idea, Folder } from '../types';
+import type { Idea, Folder } from '../types';
 
 interface IdeaCardProps {
   idea: Idea;

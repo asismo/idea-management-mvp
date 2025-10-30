@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useSettingsStore } from '../store/settingsStore';
-import { Settings } from '../types';
+import type { Settings } from '../types';
 import * as supabaseClient from '../services/supabaseClient';
 import { DEFAULT_SETTINGS } from '../utils/constants';
 

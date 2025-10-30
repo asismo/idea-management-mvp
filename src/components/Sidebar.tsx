@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronDown, Trash2, GripVertical } from 'lucide-react';
+import { Trash2, GripVertical } from 'lucide-react';
 import { Card } from './Card';
-import { Folder } from '../types';
+import type { Folder } from '../types';
 
 interface SidebarProps {
   folders: Folder[];
@@ -21,7 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [draggedFolderId, setDraggedFolderId] = useState<string | null>(null);
 
-  const toggleFolder = (id: string) => {
+  const _toggleFolder = (id: string) => {
     const newExpanded = new Set(expandedFolders);
     if (newExpanded.has(id)) {
       newExpanded.delete(id);

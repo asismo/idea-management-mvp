@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import * as geminiService from '../services/geminiService';
-import { Idea } from '../types';
+
 
 export const useAI = () => {
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useIdeaStore } from '../store/ideaStore';
-import { Idea } from '../types';
+import type { Idea } from '../types';
 import * as supabaseClient from '../services/supabaseClient';
 
 export const useIdeas = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Dashboard } from './pages/Dashboard';
 import { useUIStore } from './store/uiStore';
 import './index.css';

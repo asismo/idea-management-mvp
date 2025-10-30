@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Settings } from '../types';
+import type { Settings } from '../types';
 import { DEFAULT_SETTINGS } from '../utils/constants';
 
 interface SettingsStore {

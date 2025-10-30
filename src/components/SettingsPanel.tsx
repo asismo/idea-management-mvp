@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Card } from './Card';
 import { Button } from './Button';
-import { Settings } from '../types';
+import type { Settings } from '../types';
 import { AUDIO_SERVICES, CATEGORIZATION_MODES, SEARCH_MODES, THEMES } from '../utils/constants';
 
 interface SettingsPanelProps {
@@ -18,7 +18,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   settings,
   onSettingsChange,
 }) => {
-  const [isSaving, setIsSaving] = useState(false);
+
 
   if (!isOpen || !settings) return null;
 

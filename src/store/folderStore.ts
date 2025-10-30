@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Folder } from '../types';
+import type { Folder } from '../types';
 
 interface FolderStore {
   folders: Folder[];
